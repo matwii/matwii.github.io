@@ -1,0 +1,220 @@
+{
+  "title": "officeTime of US presidents",
+  "presidents": [
+    {
+      "number": 1,
+      "name": "Washington",
+      "officeTime": 94
+    },
+    {
+      "number": 2,
+      "name": "Adams",
+      "officeTime": 48
+    },
+    {
+      "number": 3,
+      "name": "Jefferson",
+      "officeTime": 96
+    },
+    {
+      "number": 4,
+      "name": "Madison",
+      "officeTime": 96
+    },
+    {
+      "number": 5,
+      "name": "Monroe",
+      "officeTime": 96
+    },
+    {
+      "number": 6,
+      "name": "Adams",
+      "officeTime": 48
+    },
+    {
+      "number": 7,
+      "name": "Jackson",
+      "officeTime": 96
+    },
+    {
+      "number": 8,
+      "name": "Van Buren",
+      "officeTime": 48
+    },
+    {
+      "number": 9,
+      "name": "Harrison",
+      "officeTime": 1
+    },
+    {
+      "number": 10,
+      "name": "Tyler",
+      "officeTime": 47
+    },
+    {
+      "number": 11,
+      "name": "Polk",
+      "officeTime": 48
+    },
+    {
+      "number": 12,
+      "name": "Taylor",
+      "officeTime": 16
+    },
+    {
+      "number": 13,
+      "name": "Filmore",
+      "officeTime": 32
+    },
+    {
+      "number": 14,
+      "name": "Pierce",
+      "officeTime": 48
+    },
+    {
+      "number": 15,
+      "name": "Buchanan",
+      "officeTime": 48
+    },
+    {
+      "number": 16,
+      "name": "Lincoln",
+      "officeTime": 49
+    },
+    {
+      "number": 17,
+      "name": "Johnson",
+      "officeTime": 47
+    },
+    {
+      "number": 18,
+      "name": "Grant",
+      "officeTime": 96
+    },
+    {
+      "number": 19,
+      "name": "Hayes",
+      "officeTime": 48
+    },
+    {
+      "number": 20,
+      "name": "Garfield",
+      "officeTime": 7
+    },
+    {
+      "number": 21,
+      "name": "Arthur",
+      "officeTime": 41
+    },
+    {
+      "number": 22,
+      "name": "Cleveland",
+      "officeTime": 48
+    },
+    {
+      "number": 23,
+      "name": "Harrison",
+      "officeTime": 48
+    },
+    {
+      "number": 24,
+      "name": "Cleveland",
+      "officeTime": 48
+    },
+    {
+      "number": 25,
+      "name": "McKinley",
+      "officeTime": 54
+    },
+    {
+      "number": 26,
+      "name": "Roosevelt",
+      "officeTime": 90
+    },
+    {
+      "number": 27,
+      "name": "Taft",
+      "officeTime": 48
+    },
+    {
+      "number": 28,
+      "name": "Wilson",
+      "officeTime": 96
+    },
+    {
+      "number": 29,
+      "name": "Harding",
+      "officeTime": 29
+    },
+    {
+      "number": 30,
+      "name": "Coolidge",
+      "officeTime": 67
+    },
+    {
+      "number": 31,
+      "name": "Hoover",
+      "officeTime": 48
+    },
+    {
+      "number": 32,
+      "name": "Roosevelt",
+      "officeTime": 146
+    },
+    {
+      "number": 33,
+      "name": "Truman",
+      "officeTime": 92
+    },
+    {
+      "number": 34,
+      "name": "Eisenhower",
+      "officeTime": 96
+    },
+    {
+      "number": 35,
+      "name": "Kennedy",
+      "officeTime": 34
+    },
+    {
+      "number": 36,
+      "name": "Johnson",
+      "officeTime": 62
+    },
+    {
+      "number": 37,
+      "name": "Nixon",
+      "officeTime": 67
+    },
+    {
+      "number": 38,
+      "name": "Ford",
+      "officeTime": 29
+    },
+    {
+      "number": 39,
+      "name": "Carter",
+      "officeTime": 48
+    },
+    {
+      "number": 40,
+      "name": "Reagan",
+      "officeTime": 96
+    },
+    {
+      "number": 41,
+      "name": "Bush",
+      "officeTime": 48
+    },
+    {
+      "number": 42,
+      "name": "Clinton",
+      "officeTime": 96
+    },
+    {
+      "number": 43,
+      "name": "Bush",
+      "officeTime": 96
+    }
+  ]
+}

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>D3 Page Template</title>
+    <script type="text/javascript" src="d3.js"></script>
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+<script type="text/javascript">
+    var dataset = [];
+    var dataset2 = [[]];
+    var w = 500;
+    var h = 300;
+    var barPadding = 1;
+    var yScale;
+    var xScale;
+    var padding = 40;
+    var xAxis;
+    var yAxis;
+
+    d3.json("data.json", function (data) {
+        dataset = data.presidents;
+        this.sortArray();
+        console.log(dataset);
+        dataset2 = this.findDuplicates();
+
+        yScale = d3.scaleLinear()
+            .domain([0, d3.max(dataset, function (d) {
+                return d.number;
+            })])
+            .range([h - padding, padding]);
+
+        xScale = d3.scaleLinear()
+            .domain([0, d3.max(dataset, function (d) {
+                return d.officeTime;
+            })])
+            .range([padding, w - padding]);
+
+        xAxis = d3.axisBottom(xScale);
+        yAxis = d3.axisLeft(yScale);
+
+        renderSVG();
+    });
+
+    /**
+     * Sorts the array based on office time for each president
+     */
+    function sortArray() {
+        dataset.sort(function (a, b) {
+            return parseFloat(a.officeTime) - parseFloat(b.officeTime);
+        });
+    }
+
+    /**
+     * Goes through the dataset and looks for how many duplicates of each president that has the same office time.
+     * Adds total time plus how many duplicates into a 2d array
+     */
+    function findDuplicates() {
+        var result = [[]];
+        var counter = 1;
+        for (var i = 0; i < dataset.length - 1; i++) {
+            if (dataset[i + 1].officeTime === dataset[i].officeTime) {
+                counter += 1;
+                result.push([[dataset[i].officeTime, counter]]);
+            } else {
+                counter = 1;
+                result.push([[dataset[i].officeTime, counter]]);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Renders the circles that shows each datapoint
+     */
+    function renderSVG() {
+        var svg2 = d3.select("#graph1")
+            .append("svg")
+            .attr("width", w)
+            .attr("height", h);
+
+
+        svg2.selectAll("circle")
+            .data(dataset)
+            .enter()
+            .append("circle")
+            .attr("cx", function (d) {
+                return xScale(d.officeTime);
+            })
+            .attr("cy", function (d) {
+                return yScale(d.number);
+            })
+            .attr("r", function (d) {
+                return 5
+            })
+            .attr("fill", "white")
+            .attr("stroke", "rgb(0,0,0)")
+
+        svg2.append('g')
+            .attr('class', 'axis')
+            .attr('transform', 'translate(0,' + (h - padding) + ')')
+            .call(xAxis);
+
+        svg2.append("text")
+            .attr("text-anchor", "middle")  // this makes it easy to centre the text as the transform is applied to the anchor
+            .attr("transform", "translate(" + (w / 2) + "," + (h - (padding / 20)) + ")")  // centre below axis
+            .text("Time in office");
+
+        svg2.append('g')
+            .attr('class', 'axis')
+            .attr('transform', 'translate(' + padding + ',0)')
+            .call(yAxis);
+
+        svg2.append("text")
+            .attr("text-anchor", "middle")  // this makes it easy to centre the text as the transform is applied to the anchor
+            .attr("transform", "translate("+ (padding/3) +","+(h/2)+")rotate(-90)")  // text is drawn off the screen top left, move down and out and rotate
+            .text("President number");
+    }
+</script>
+<h1 style="margin-left: 10px">Exercise 2</h1>
+<div class="main-container">
+    <div id="graph1" style="margin-left: 10px">
+        <p>Dot and jitter plots showing the number of months U.S. presidents spent in office.</p>
+    </div>
+    <div id="graph2">
+        <p>Test text</p>
+    </div>
+</div>
+</body>
+</html>
