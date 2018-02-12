@@ -9,12 +9,14 @@
 <body>
 <script type="text/javascript">
     var dataset = [];
-    var dataset2 = [[]];
+    var dataset2 = [];
     var w = 500;
     var h = 300;
     var barPadding = 1;
     var yScale;
+    var yScale2;
     var xScale;
+    var xScale2;
     var padding = 40;
     var xAxis;
     var yAxis;
@@ -24,10 +26,17 @@
         this.sortArray();
         console.log(dataset);
         dataset2 = this.findDuplicates();
+        console.log(dataset2);
 
         yScale = d3.scaleLinear()
             .domain([0, d3.max(dataset, function (d) {
                 return d.number;
+            })])
+            .range([h - padding, padding]);
+
+        yScale2 = d3.scaleLinear()
+            .domain([0, d3.max(dataset2, function (d) {
+                return d[1];
             })])
             .range([h - padding, padding]);
 
@@ -37,10 +46,20 @@
             })])
             .range([padding, w - padding]);
 
+        xScale2 = d3.scaleBand()
+            .domain(d3.range(dataset2.length))
+            .range([0,w])
+            .round(true)
+            .paddingInner(0.05);
+
         xAxis = d3.axisBottom(xScale);
         yAxis = d3.axisLeft(yScale);
 
+        xAxis2 = d3.axisBottom(xScale2);
+        yAxis2 = d3.axisLeft(yScale2);
+
         renderSVG();
+        renderHistogram();
     });
 
     /**
@@ -57,15 +76,14 @@
      * Adds total time plus how many duplicates into a 2d array
      */
     function findDuplicates() {
-        var result = [[]];
+        var result = [];
         var counter = 1;
         for (var i = 0; i < dataset.length - 1; i++) {
             if (dataset[i + 1].officeTime === dataset[i].officeTime) {
                 counter += 1;
-                result.push([[dataset[i].officeTime, counter]]);
             } else {
+                result.push([dataset[i].officeTime, counter]);
                 counter = 1;
-                result.push([[dataset[i].officeTime, counter]]);
             }
         }
         return result;
@@ -116,6 +134,41 @@
             .attr("text-anchor", "middle")  // this makes it easy to centre the text as the transform is applied to the anchor
             .attr("transform", "translate("+ (padding/3) +","+(h/2)+")rotate(-90)")  // text is drawn off the screen top left, move down and out and rotate
             .text("President number");
+    }
+
+    function renderHistogram() {
+        var svg1 = d3.select("#graph2")
+            .append("svg")
+            .attr("width", w)
+            .attr("height", h);
+
+        svg1.selectAll("rect")
+            .data(dataset2)
+            .enter()
+            .append("rect")
+            .attr("x", function (d, i) {
+                return xScale2(i);
+            })
+            .attr("y", function (d, i) {
+                return yScale2(d[1] - 1)
+            })
+            .attr("width", xScale2.bandwidth() - 10)
+            .attr("height", function (d) {
+                return d[1]*50;
+            })
+            /*.attr("fill", function (d) {
+                return ("rgb(0, 0, " + Math.round(d*10) + ")")
+            });*/
+
+        svg1.append('g')
+            .attr('class', 'axis')
+            .attr('transform', 'translate(0,' + (h) + ')')
+            .call(xAxis2);
+
+        svg1.append('g')
+            .attr('class', 'axis')
+            .attr('transform', 'translate(' + 20 + ',0)')
+            .call(yAxis2);
     }
 </script>
 <h1 style="margin-left: 10px">Exercise 2</h1>
