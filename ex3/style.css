@@ -1,0 +1,72 @@
+
+#container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+
+#checkboxContainer {
+    width: 400px;
+    margin-top: 100px;
+}
+
+#graph {
+    margin-left: 10%;
+    margin-top: 100px;
+}
+
+html * {
+    font-family: sans-serif;
+}
+
+.axis {
+    shape-rendering: crispEdges;
+}
+.axis text {
+    font-size: 10pt;
+    font-family: Optima, Futura, sans-serif;
+    font-weight: italic;
+    stroke-width: 0.5pt;
+    fill: black;
+}
+
+.axis path {
+    fill: none;
+    stroke: gray;
+    stroke-opacity: .75;
+}
+
+.axis line{
+    stroke: gray;
+    stroke-width: 1.5pt;
+    stroke-opacity: 0.75;
+}
+
+.Legend {
+    font-family: "Times New Roman", Times, serif;
+    font-size: 9pt;
+    letter-spacing: -10pt;
+    fill: black;
+}
+
+
+.yAxisLabel {
+    font-family: "Times New Roman", Times, serif;
+    font-size: 9pt;
+    letter-spacing: -10pt;
+    fill: black;
+}
+
+.xAxisLabel {
+    font-family: "Times New Roman", Times, serif;
+    font-size: 15pt;
+    letter-spacing: -10pt;
+    fill: black;
+}
+
+.values {
+    font-family: "Times New Roman", Times, serif;
+    font-size: 10pt;
+    letter-spacing: -10pt;
+    fill: black;
+}
