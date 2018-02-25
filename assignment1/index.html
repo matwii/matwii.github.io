@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+
+<html lang='en'>
+<head>
+    <meta charset="utf-8">
+    <title>Social Data Analysis and Visualization</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="headerContainer">
+    <h1>
+        Social Data Analysis and Visualization
+    </h1>
+    <h1 class="courseNumber">
+        02806
+    </h1>
+    <h2>
+        Assignment 1
+    </h2>
+</div>
+<a href="part3.html">Part 3</a>
+<div class="questionContainer">
+    <div class="part1">
+        <h2 style="margin-left: 20px">
+            Part 1: DAOST Chapter 2 Questions
+        </h2>
+    </div>
+    <div class="part2">
+        <h2 style="margin-left: 20px">
+            Part 2: DAOST Chapter 3 Questions
+        </h2>
+        <ol>
+            <li><h4>Looking at Fig 3-1, Janert writes "the data itself shows clearly that the amount of random noise in the data is small". What do you think his argument is?</h4></li>
+            <p>
+                the data points fall on a relatively smooth curve, and we can have confidence that it represents the data accurately.
+                This means that the data points have little deviation from the curve.
+            </p>
+            <li><h4>Can you think of a real-world example of a multivariate relationship like the one in Fig 3-3 (lower right panel)?</h4></li>
+            <p>
+                The curve look very much like a plot of the test and training error. Where the training error of a given statistical model goes towards zero, but as the model starts to overfit the test error starts to increase.
+            </p>
+            <li><h4>What are the two methods Janert mentions for smoothing noisy data? Can you think of other ones?</h4></li>
+            <p>
+                Weighted splines and a method called LOESS/LOWESS. These works by sorting the data in neighbourhoods. Something similar to this woule be the nearest neighbour algorithm.
+            </p>
+            <li><h4>What are residuals? Why is it a good idea to plot the residuals of your fit?</h4></li>
+            <p>
+                It is the difference between the observerd y-value and the estimated y-value. It is a good idea to get an idea if your estimated y-values will fit the data.
+            </p>
+            <li><h4>Explain in your own words the point of the smooth tube in figure 3-7.</h4></li>
+            <p>
+                This curve illustrates the interval where most of the data lies in. There is a solid line that represents the smoothness of the data set and dashed lines that represents the upper and lower data points.
+            </p>
+            <li><h4>What kind of relationships will a semi-log plot help you discover?</h4></li>
+            <p>
+                A semi-log plot is used for visializing the exponential relationship for the data.
+            </p>
+            <li><h4>What kind of functions will loglog plots help you see?</h4></li>
+            <p>
+                It renders all power-law relations as straight lines. It also shows y as a linear function of log x and the slope is different depending on the exponent k.
+            </p>
+            <li><h4>What the h#ll is banking and what element from our visual system does it use to help us see patterns? What are potential problems with banking?</h4></li>
+            <p>
+                Banking is a way to change the plots so that the curves will be more analyzable for the human eye. This does not make any changes to the data, only the visualization of the plot.
+                It changes the aspects ratio of the graph so that it is more recognizable for the humans affinity of proportions of 4 by 3. Problems can occur if the aspect ratio gets too misrepresented or details disappears because of shrinking axes.
+            </p>
+            <li><h4>I think figure 3-14 makes an important point about linear fits that is rarely made. What is it? </h4></li>
+            <p>
+                It shows that you should think about what kind of information you want to get out of the graph. As we can see on the graph the same data set is fitted both ways, resulting in that the straight lines are quite different. So this is the reason why you should think if you want x based on y, or y based on x.
+            </p>
+            <li><h4>Summarize the discussion of Graphical Analysis and Presentation Graphics on pp. 68-69 in your own words.</h4></li>
+            <p>
+                There are two ways of graphical visualization, graphical analysis and graphical presentation
+                Graphical analysis is when you want to investigate and explore that data with the purpose of finding new information about the data.
+                Graphical presentation you want to visualize information about the data that has already been investigated and understood.
+                For graphical presentation it is best to use graphs that are easy to understand. Another thing to consider in this phase is the audience that the graph should be presented to and what knowledge this audience has.
+            </p>
+        </ol>
+    </div>
+</div>
+<div>
+    <a href="../ex3/index.html">Part 3</a>
+</div>
+</body>
+</html>
