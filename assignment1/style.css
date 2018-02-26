@@ -107,3 +107,11 @@ html * {
     position: absolute;
     z-index: 1;
 }
+
+.line.men {
+    stroke: blue;
+}
+
+.line.women {
+    stroke: red;
+}

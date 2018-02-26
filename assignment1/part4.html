@@ -13,13 +13,21 @@
     var womenTimes;
 
     var margin = {top: 50, right: 100, bottom: 100, left: 60},
-        w = 600 - margin.left - margin.right,
-        h = 400 - margin.top - margin.bottom;
+        w = 1000 - margin.left - margin.right,
+        h = 600 - margin.top - margin.bottom;
+
+    var decimalFormat = d3.format("0.2f");
 
     var xScale;
+    var xScale2;
     var xAxis;
     var yScale;
+    var yScale2;
     var yAxis;
+    var xLabels;
+    var yLabels;
+    var xSeries;
+    var ySeries;
 
     var tooltip = d3.select("body")
         .append("div")
@@ -45,15 +53,23 @@
     //Loads CSV files
     d3.csv('men.csv', rowConverter, function(dataMen) {
         d3.csv('women.csv', rowConverter, function(dataWomen) {
-            menTimes = dataWomen;
-            womenTimes = dataMen;
+            menTimes = dataMen;
+            womenTimes = dataWomen;
 
             xScale = d3.scaleLinear()
                 .domain([d3.min(dataMen, function (d) {return d.Year})-1, d3.max(dataMen, function (d) {return d.Year})+1])
                 .range([0,w]);
 
+            xScale2 = d3.scaleLinear()
+                .domain([d3.min(dataMen, function (d) {return d.Year})-1, 1990])
+                .range([0,w]);
+
             yScale = d3.scaleLinear()
                 .domain([d3.min(dataMen, function (d) {return d.Time})-1, d3.max(dataWomen, function (d) {return d.Time})+1])
+                .range([h, 0]);
+
+            yScale2 = d3.scaleLinear()
+                .domain([d3.min(dataMen, function (d) {return d.Time})-1, 1990])
                 .range([h, 0]);
 
             xAxis = d3.axisBottom(xScale);
@@ -147,8 +163,96 @@
                         .duration(500)
                         .style("opacity", 0);
                 });
+
+            //Draw line
+            var line = d3.line()
+                .x(function (d) {
+                    return xScale(d.Year)
+                })
+                .y(function (d) {
+                    return yScale(d.Time)
+                });
+
+            svg.append("path")
+                .datum(menTimes)
+                .attr("class", "menData")
+                .attr("id", "menline")
+                .attr("d", line)
+                .style("stroke-width", 0.5)
+                .style("stroke", "blue")
+                .style("fill", "none");
+
+            svg.append("path")
+                .datum(womenTimes)
+                .attr("class", "womenData")
+                .attr("id","womenline")
+                .attr("d", line)
+                .style("stroke-width", 0.5)
+                .style("stroke", "red")
+                .style("fill", "none")
+
+            showTrendLine();
         });
     });
+
+    function showTrendLine() {
+        var aMen = -0.29;
+        var bMen = 709.71;
+
+        var aWomen=-2.99620;
+        var bWomen=6092.09;
+
+        var regressionLine = d3.line()
+            .x(function(d) {
+                return xScale(d.Year)
+            })
+            .y(function(d) {
+                return yScale(aMen * d.Year + bMen)
+            });
+
+        svg.append("path")
+            .datum(menTimes)
+            .attr("class", "line men")
+            .attr("d", regressionLine);
+
+        var regressionLine2 = d3.line()
+            .x(function(d) {
+                return xScale(d.Year)
+            })
+            .y(function(d) {
+                return yScale(aWomen * d.Year + bWomen)
+            });
+
+        svg.append("path")
+            .datum(womenTimes)
+            .attr("class", "line women")
+            .attr("d", regressionLine2)
+    }
+
+    // returns slope, intercept and r-square of the line
+    function leastSquares(xSeries, ySeries) {
+        console.log(xSeries, ySeries);
+        var reduceSumFunc = function(prev, cur) { return prev + cur; };
+
+        var xBar = xSeries.reduce(reduceSumFunc) * 1.0 / xSeries.length;
+        var yBar = ySeries.reduce(reduceSumFunc) * 1.0 / ySeries.length;
+
+        var ssXX = xSeries.map(function(d) { return Math.pow(d - xBar, 2); })
+            .reduce(reduceSumFunc);
+
+        var ssYY = ySeries.map(function(d) { return Math.pow(d - yBar, 2); })
+            .reduce(reduceSumFunc);
+
+        var ssXY = xSeries.map(function(d, i) { return (d - xBar) * (ySeries[i] - yBar); })
+            .reduce(reduceSumFunc);
+
+        var slope = ssXY / ssXX;
+        var intercept = yBar - (xBar * slope);
+        var rSquare = Math.pow(ssXY, 2) / (ssXX * ssYY);
+
+        return [slope, intercept, rSquare];
+    }
+
 </script>
 </body>
 </html>
