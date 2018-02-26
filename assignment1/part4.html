@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Part 4</title>
+    <script type="text/javascript" src="./d3.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<script type="text/javascript">
+
+    var menTimes;
+    var womenTimes;
+
+    var margin = {top: 50, right: 100, bottom: 100, left: 60},
+        w = 600 - margin.left - margin.right,
+        h = 400 - margin.top - margin.bottom;
+
+    var xScale;
+    var xAxis;
+    var yScale;
+    var yAxis;
+
+    var tooltip = d3.select("body")
+        .append("div")
+        .attr("class", "tooltip");
+
+    //Initial settings for graph
+    var svg = d3.select("body").append("svg")
+        .attr("width", w + margin.left + margin.right)
+        .attr("height", h + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    //Converts the strings to time
+    var rowConverter = function(d) {
+        return {
+            Year: parseInt(d.Year),
+            Time: Math.round(parseInt(d.Time.substring(0,1)) * 60
+            + parseInt(d.Time.substring(2,4))
+            + parseInt(d.Time.substring(5, 7)) / 60),
+        };
+    };
+
+    //Loads CSV files
+    d3.csv('men.csv', rowConverter, function(dataMen) {
+        d3.csv('women.csv', rowConverter, function(dataWomen) {
+            menTimes = dataWomen;
+            womenTimes = dataMen;
+
+            xScale = d3.scaleLinear()
+                .domain([d3.min(dataMen, function (d) {return d.Year})-1, d3.max(dataMen, function (d) {return d.Year})+1])
+                .range([0,w]);
+
+            yScale = d3.scaleLinear()
+                .domain([d3.min(dataMen, function (d) {return d.Time})-1, d3.max(dataWomen, function (d) {return d.Time})+1])
+                .range([h, 0]);
+
+            xAxis = d3.axisBottom(xScale);
+            yAxis = d3.axisLeft(yScale);
+
+            console.log(dataMen);
+
+            //Axis
+            xAxis = d3.axisBottom()
+                .scale(xScale)
+                .ticks(10)
+                .tickFormat(d3.nice);
+
+            svg.append("g")
+                .attr("class", "x axis")
+                .attr("transform", "translate(0," + (h) + ")")
+                .call(xAxis);
+
+            svg.append("text")
+                .attr("transform", "translate(" + (w/2) + " ," + (h + margin.top) + ")")
+                .style("text-anchor", "middle")
+                .text("Year");
+
+            svg.append("g")
+                .attr("class", "y axis")
+                .call(yAxis);
+
+            svg.append("text")
+                .attr("transform", "rotate(-90)")
+                .attr("y", 0 - margin.left)
+                .attr("x",0 - (h / 2))
+                .attr("dy", "1em")
+                .style("text-anchor", "middle")
+                .text("Time");
+
+            //render the dots for men
+            svg.selectAll("circle")
+                .data(dataMen)
+                .enter()
+                .append("circle")
+                .attr("class", "dot")
+                .attr("r", 3.5)
+                .attr("cx", function (d) {
+                    return xScale(d.Year);
+                })
+                .attr("cy", function (d) {
+                    return yScale(d.Time);
+                })
+                .attr("fill", "blue")
+                .on("mouseover", function (d) {
+                    tooltip.transition()
+                        .duration(200)
+                        .style("opacity", .9);
+
+                    tooltip.html("(" + d["Year"] + "," + d["Time"] + ")")
+                        .style("left", (d3.event.pageX + 5) + "px")
+                        .style("top", (d3.event.pageY + 20) + "px");
+                })
+                .on("mouseout", function (d) {
+                    tooltip.transition()
+                        .duration(500)
+                        .style("opacity", 0);
+                });
+
+            //Render rectangles for women
+            svg.selectAll("rect")
+                .data(dataWomen)
+                .enter()
+                .append("rect")
+                .attr("class", "dot")
+                .attr("x", function (d) {
+                    return xScale(d.Year);
+                })
+                .attr("y", function (d) {
+                    return yScale(d.Time);
+                })
+                .attr("height", 6)       // Set the height
+                .attr("width", 6)
+                .attr("fill", "red")
+                .on("mouseover", function (d) {
+                    tooltip.transition()
+                        .duration(200)
+                        .style("opacity", .9);
+
+                    tooltip.html("(" + d["Year"] + "," + d["Time"] + ")")
+                        .style("left", (d3.event.pageX + 5) + "px")
+                        .style("top", (d3.event.pageY + 20) + "px");
+                })
+                .on("mouseout", function (d) {
+                    tooltip.transition()
+                        .duration(500)
+                        .style("opacity", 0);
+                });
+        });
+    });
+</script>
+</body>
+</html>

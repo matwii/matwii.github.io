@@ -93,3 +93,17 @@ html * {
     fill: black;
 }
 
+.dot {
+    stroke: #000;
+}
+
+.tooltip {
+    width: 90px;
+    background-color: #e7e7e7;
+    color: black;
+    text-align: center;
+    border-radius: 6px;
+    padding: 2px 0;
+    position: absolute;
+    z-index: 1;
+}
