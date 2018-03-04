@@ -1,0 +1,18 @@
+[
+  {
+    "BORO": "Manhattan",
+    "CrimeRate": 0.23868497440305458
+  },
+  {
+    "BORO": "Brooklyn", "CrimeRate": 0.2987510511558951
+  },
+  {
+    "BORO": "Queens", "CrimeRate": 0.19815516315588363
+  },
+  {
+    "BORO": "Bronx", "CrimeRate": 0.2167992455335284
+  },
+  {
+    "BORO": "Staten Island", "CrimeRate": 0.0476095657516383
+  }
+]

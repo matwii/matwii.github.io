@@ -1,0 +1,419 @@
+<html lang='en'>
+<head>
+    <meta charset="utf-8">
+    <title>Social Data Analysis and Visualization</title>
+    <link rel="stylesheet" href="style.css">*
+    <script src="https://d3js.org/d3.v4.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+</head>
+
+<body>
+<div class="headerContainer">
+    <h1>
+        Social Data Analysis and Visualization
+    </h1>
+    <h1 class="courseNumber">
+        02806
+    </h1>
+    <h2>
+        Exercise 5
+    </h2>
+    <ul>
+        <li><a href="pie.html">Pie Chart Example</a></li>
+        <li><a href="doughnut.html">Doughnut Example</a></li>
+        <li><a href="stackedArea.html">StackedArea Example</a></li>
+        <li><a href="force.html">Network Example</a></li>
+    </ul>
+
+    <script>
+        renderNetwork();
+        renderDonut();
+        formatData();
+
+        renderStackedArea();
+
+        function formatData() {
+            var crimes = [];
+
+            d3.csv("stackedData.csv", function (data) {
+                //Formats text of crime names.
+                for (var i = 0; i < data.length; i++){
+                    var word = data[i].OFNS_DESC.split(' ').slice(0,3).join(' ').replace(/[0-9]/g, '').replace(/&/g, '');
+                    var record = {
+                        crime: word,
+                        date: data[i].CMPLNT_FR_DT,
+                        counter: 0
+                    };
+                    crimes.push(record);
+                }
+                formatArray(crimes);
+            })
+        }
+
+        /**
+         * Goes through the data and removes all records that does not include the five most common crimes
+         **/
+        function formatArray(data) {
+            var result = [];
+            for (var i = 0; i < data.length; i++){
+                switch (data[i].crime){
+                    case "PETIT LARCENY":
+                        result.push(data[i]);
+                        break;
+                    case "GRAND LARCENY":
+                        result.push(data[i]);
+                        break;
+                    case "HARRASSMENT ":
+                        result.push(data[i]);
+                        break;
+                    case "ASSAULT  ":
+                        result.push(data[i]);
+                        break;
+                    case "CRIMINAL MISCHIEF ":
+                        result.push(data[i]);
+                }
+            }
+
+
+        }
+
+        /**
+         * Function for finding duplciates and counting the crimes occuring the most.
+         * Crimes to keep: PETIT LARCENY, GRAND LARCENY, HARRASSMENT , ASSAULT  , CRIMINAL MISCHIEF .
+         **/
+        function findDuplicates(data) {
+            var result = [];
+            var counter = 1;
+            for (var i = 0; i < data.length - 1; i++) {
+                if (data[i + 1].crime === data[i].crime) {
+                    counter += 1;
+                } else {
+                    data[i].counter = counter;
+                    result.push([data[i]]);
+                    counter = 1;
+                }
+            }
+
+            result.sort(function (a, b) {
+                if (a[0].counter < b[0].counter) { return 1; }
+                else if (a[0].counter === b[0].counter) { return 0; }
+                else { return -1; }
+            });
+
+            console.log(result);
+            return   result;
+        }
+
+        function compare(a,b) {
+            if (a.crime < b.crime)
+                return -1;
+            if (a.crime > b.crime)
+                return 1;
+            return 0;
+        }
+        
+        function renderStackedArea() {
+            //Width and height
+            var w = 800;
+            var h = 500;
+            var padding = 20;
+
+            var dataset, xScale, yScale, xAxis, yAxis, area;  //Empty, for now
+            //For converting strings to Dates
+            var parseTime = d3.timeParse("%Y-%m");
+            //For converting Dates to strings
+            var formatTime = d3.timeFormat("%b %Y");
+            //Function for converting CSV values from strings to Dates and numbers
+            //We assume one column named 'Date' plus several others that will be converted to ints
+            var rowConverter = function(d, i, cols) {
+                //Initial 'row' object includes only date
+                var row = {
+                    date: parseTime(d.Date),  //Make a new Date object for each year + month
+                };
+                //Loop once for each vehicle type
+                for (var i = 1; i < cols.length; i++) {
+                    var col = cols[i];
+                    //If the value exists…
+                    if (d[cols[i]]) {
+                        row[cols[i]] = +d[cols[i]];  //Convert from string to int
+                    } else {  //Otherwise…
+                        row[cols[i]] = 0;  //Set to zero
+                    }
+                }
+                return row;
+            }
+            //Set up stack method
+            var stack = d3.stack()
+                .order(d3.stackOrderDescending);  // <-- Flipped stacking order
+            //Load in data
+            d3.csv("processed.csv", rowConverter, function(data) {
+                var dataset = data;
+                // console.log(dataset);
+                //Now that we know the column names in the data…
+                var keys = dataset.columns;
+                keys.shift();  //Remove first column name ('Date')
+                stack.keys(keys);  //Stack using what's left (the car names)
+                //Data, stacked
+                var series = stack(dataset);
+                // console.log(series);
+                //Create scale functions
+                xScale = d3.scaleTime()
+                    .domain([
+                        d3.min(dataset, function(d) { return d.date; }),
+                        d3.max(dataset, function(d) { return d.date; })
+                    ])
+                    .range([padding, w - padding * 2]);
+                yScale = d3.scaleLinear()
+                    .domain([
+                        0,
+                        d3.max(dataset, function(d) {
+                            var sum = 0;
+                            //Loops once for each row, to calculate
+                            //the total (sum) of sales of all vehicles
+                            for (var i = 0; i < keys.length; i++) {
+                                sum += d[keys[i]];
+                            };
+                            return sum;
+                        })
+                    ])
+                    .range([h - padding, padding / 2])
+                    .nice();
+                //Define axes
+                xAxis = d3.axisBottom()
+                    .scale(xScale)
+                    .ticks(10)
+                    .tickFormat(formatTime);
+                //Define Y axis
+                yAxis = d3.axisRight()
+                    .scale(yScale)
+                    .ticks(5);
+                //Define area generator
+                area = d3.area()
+                    .x(function(d) { return xScale(d.data.date); })
+                    .y0(function(d) { return yScale(d[0]); })
+                    .y1(function(d) { return yScale(d[1]); });
+                //Create SVG element
+                var svg = d3.select("#stackedChart")
+                    .append("svg")
+                    .attr("width", w)
+                    .attr("height", h);
+                //Create areas
+                svg.selectAll("path")
+                    .data(series)
+                    .enter()
+                    .append("path")
+                    .attr("class", "area")
+                    .attr("d", area)
+                    .attr("fill", function(d, i) {
+                        return d3.schemeCategory20[i];
+                    })
+                    .append("title")  //Make tooltip
+                    .text(function(d) {
+                        return d.key;
+                    });
+                //Create axes
+                svg.append("g")
+                    .attr("class", "axis")
+                    .attr("transform", "translate(0," + (h - padding) + ")")
+                    .call(xAxis);
+                svg.append("g")
+                    .attr("class", "axis")
+                    .attr("transform", "translate(" + (w - padding * 2) + ",0)")
+                    .call(yAxis);
+            });
+        }
+
+        function renderDonut() {
+            d3.json("doughnutData.json", function (data) {
+                var w = 500;
+                var h = 500;
+                var dataset = data;
+                var outerRadius = w / 2;
+                var innerRadius = w / 3;
+
+                var arc = d3.arc()
+                    .innerRadius(innerRadius)
+                    .outerRadius(outerRadius);
+
+                var pie = d3.pie()
+                    .value(function (d) {
+                        return d.CrimeRate;
+                    });
+
+                //Easy colors accessible via a 10-step ordinal scale
+                var color = d3.scaleOrdinal(d3.schemeCategory10);
+                //Create SVG element
+                var svg = d3.select("#doughnutChart")
+                    .append("svg")
+                    .attr("width", w)
+                    .attr("height", h);
+
+                //Set up groups
+                var arcs = svg.selectAll("g.arc")
+                    .data(pie(dataset))
+                    .enter()
+                    .append("g")
+                    .attr("class", "arc")
+                    .attr("transform", "translate(" + outerRadius + "," + outerRadius + ")");
+
+                //Draw arc paths
+                arcs.append("path")
+                    .attr("fill", function(d, i) {
+                        return color(i);
+                    })
+                    .attr("d", arc);
+
+                //Labels
+                arcs.append("text")
+                    .attr("transform", function(d) {
+                        return "translate(" + arc.centroid(d) + ")";
+                    })
+                    .attr("text-anchor", "middle")
+                    .attr("font-family", "serif")
+                    .attr("fill", "white")
+                    .html(function(d) {
+                        return d.data.BORO;
+                    })
+
+                arcs.append("text")
+                    .attr("transform", function(d) {
+                        return "translate(" + arc.centroid(d) + ")";
+                    })
+                    .attr("text-anchor", "middle")
+                    .attr("font-family", "serif")
+                    .attr("fill", "white")
+                    .attr("dy", 20)
+                    .html(function(d) {
+                        return Math.round(d.data.CrimeRate * 100) / 100;
+                    })
+            })
+        }
+
+        function renderNetwork() {
+            //Width and height
+            var w = 500;
+            var h = 300;
+            //Original data
+            var dataset = {
+                nodes: [
+                    {name: "Manhattan" },
+                    {name: "Brooklyn" },
+                    { name: "Queens" },
+                    { name: "The Bronx" },
+                    { name: "Staten Island" } ],
+                edges: [
+                    { source: 0, target: 1 },
+                    { source: 0, target: 2 },
+                    { source: 0, target: 3 },
+                    { source: 0, target: 4 },
+                    { source: 1, target: 3 },
+                    { source: 2, target: 3 },
+                    { source: 2, target: 4 },
+                    { source: 3, target: 4 }, ]
+            };
+            //Initialize a simple force layout, using the nodes and edges in dataset
+            var force = d3.forceSimulation(dataset.nodes)
+                .force("charge", d3.forceManyBody())
+                .force("link", d3.forceLink(dataset.edges))
+                .force("center", d3.forceCenter().x(w/2).y(h/2));
+            var colors = d3.scaleOrdinal(d3.schemeCategory10);
+            //Create SVG element
+            var svg = d3.select("body")
+                .append("svg")
+                .attr("width", w)
+                .attr("height", h);
+
+            //Create edges as lines
+            var edges = svg.selectAll("line")
+                .data(dataset.edges)
+                .enter()
+                .append("line")
+                .style("stroke", "#ccc")
+                .style("stroke-width", 1);
+
+            //Create nodes as circles
+            var nodes = svg.selectAll("circle")
+                .data(dataset.nodes)
+                .enter()
+                .append("circle")
+                .attr("r", 10)
+                .style("fill", function(d, i) {
+                    return colors(i);
+                })
+                .call(d3.drag()  //Define what to do on drag events
+                    .on("start", dragStarted)
+                    .on("drag", dragging)
+                    .on("end", dragEnded));
+            //Add a simple tooltip
+            nodes.append("title")
+                .text(function(d) {
+                    return d.name;
+                });
+
+            //Every time the simulation "ticks", this will be called
+            force.on("tick", function() {
+                edges.attr("x1", function(d) { return d.source.x; })
+                    .attr("y1", function(d) { return d.source.y; })
+                    .attr("x2", function(d) { return d.target.x; })
+                    .attr("y2", function(d) { return d.target.y; });
+
+                nodes.attr("cx", function(d) { return d.x; })
+                    .attr("cy", function(d) { return d.y; });
+
+            });
+            //Define drag event functions
+            function dragStarted(d) {
+                if (!d3.event.active) force.alphaTarget(0.3).restart();
+                d.fx = d.x;
+                d.fy = d.y;
+            }
+            function dragging(d) {
+                d.fx = d3.event.x;
+                d.fy = d3.event.y;
+            }
+            function dragEnded(d) {
+                if (!d3.event.active) force.alphaTarget(0);
+                d.fx = null;
+                d.fy = null;
+            }
+        }
+
+
+        /*var bronx = 1209647;
+        var brooklyn = 1666903;
+        var manhattan = 1331760;
+        var queens = 1105621;
+        var statenIsland = 265641;
+
+        var total = bronx + brooklyn + manhattan + queens + statenIsland;
+
+        normalizedBronx = bronx / total;
+        normalizedBrooklyn = brooklyn / total;
+        normalizedManhattan = manhattan / total;
+        normalizedQueens = queens / total;
+        normalizedStatenIsland = statenIsland / total;
+
+        var data = {
+            "BORO_NM": ["MANHATTAN", "BROOKLYN", "QUEENS", "BRONX", "STATEN ISLAND"],
+            "crimerate": [normalizedManhattan, normalizedBrooklyn, normalizedQueens, normalizedBronx
+                , normalizedStatenIsland]
+        }
+
+        console.log(normalizedManhattan, normalizedBrooklyn, normalizedQueens, normalizedBronx, normalizedStatenIsland)*/
+
+    </script>
+
+</div>
+<div id="networkChart" style="margin-left: 1%">
+    <h2>Network of  NYC crime data</h2>
+</div>
+<div class="mainContainer">
+    <div id="doughnutChart" style="margin-left: 1%; flex: 1">
+        <h2>Doughnut Chart of crime rates in New York</h2>
+    </div>
+    <div id="stackedChart" style="margin-left: 1%; flex: 1">
+        <h2>Monthly number of the most common crimes in New York</h2>
+    </div>
+</div>
+</body>
+</html>
