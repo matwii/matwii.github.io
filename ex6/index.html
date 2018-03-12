@@ -1,0 +1,353 @@
+<html lang='en'>
+<head>
+    <meta charset="utf-8">
+    <title>Social Data Analysis and Visualization</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="./d3.js"></script>
+</head>
+
+<body>
+<div class="headerContainer">
+    <h1>
+        Social Data Analysis and Visualization
+    </h1>
+    <h1 class="courseNumber">
+        02806
+    </h1>
+    <h2>
+        Exercise 6
+    </h2>
+    <div class="mainContainer">
+        <div id="map">
+        </div>
+        <div id="barChart">
+        </div>
+    </div>
+    <script>
+        //Width and height
+        var padding = 40;
+        var yPadding = 100;
+        var w = 550;
+        var h = 500;
+        var svg;
+        var dataset;
+        //Define map projection
+        var projection = d3.geoMercator()
+            .center([-73.95, 40.70])
+            .scale(50000)
+            .translate([w / 2, h / 2]);
+        //Define path generator
+        var path = d3.geoPath()
+            .projection(projection);
+        //Create SVG element
+        svg = d3.select("#map")
+            .append("svg")
+            .attr("width", w)
+            .attr("height", h);
+        //Define quantize scale to sort data values into buckets of color
+        var color = d3.scaleQuantize()
+            .range(["rgb(237,248,233)", "rgb(186,228,179)", "rgb(116,196,118)", "rgb(49,163,84)", "rgb(0,109,44)"]);
+
+        function resetCircles() {
+            if (d3.event.selection != null) {
+                circles.attr("class", "un_brushed")
+                    .transition()
+                    //.ease(d3.easeBackIn)
+                    .attr("r", 2);
+            }
+
+        }
+
+        //Load in GeoJSON data
+        d3.csv("murders.csv", function (data) {
+            var stateMurderCounter = countMurders(data);
+
+            //Hours per hour
+            dataset = getHours(data);
+
+            var xScale = d3.scaleBand()
+                .domain(d3.range(24))
+                .range([padding, w - padding])
+                .paddingInner(0.1);
+
+            var yScale = d3.scaleLinear()
+                .domain([0, d3.max(dataset)])
+                .range([h - yPadding, yPadding]);
+
+            var xAxis = d3.axisBottom(xScale);
+            var yAxis = d3.axisLeft(yScale);
+
+            color.domain([
+                d3.min(stateMurderCounter, function (d) {
+                    return d.count;
+                }),
+                d3.max(stateMurderCounter, function (d) {
+                    return d.count;
+                })
+            ]);
+
+            var svg2 = d3.select("#barChart").append("svg").attr("width", w).attr("height", h);
+
+            svg2.selectAll("rects")
+                .data(dataset)
+                .enter()
+                .append("rect")
+                .attr("x", function (d, i) {
+                    return xScale(i);
+                })
+                .attr("y", function (d) {
+                    return yScale(d);
+                })
+                .attr("height", function (d) {
+                    return yScale(0) - yScale(d);
+                })
+                .attr("width", xScale.bandwidth())
+                .attr("fill", function (d) {
+                    return color(d * 10);
+                })
+                .append("title")
+                .text(function (d) {
+                    return "Murders: " + d;
+                });
+
+            // Draw x-axis included values along the axis.
+            svg2.append("g")
+                .attr("class", "axis")
+                .attr("transform", "translate(0," + (h - yPadding) + ")")
+                .call(xAxis);
+
+            // Draw y-axis included values along the axis.
+            svg2.append("g")
+                .attr("class", "axis yaxis")
+                .attr("transform", "translate(" + (padding) + ",0)")
+                .call(yAxis);
+
+            //Draws Label for the X-axis
+            svg2.append("text")
+                .attr("transform",
+                    "translate(" + (w / 2) + " ," +
+                    (h - yPadding + 30) + ")")
+                .style("text-anchor", "middle")
+                .text("Hour");
+
+            // text label for the y axis
+            svg2.append("text")
+                .attr("transform", "rotate(-90)")
+                .attr("y", 0)
+                .attr("x", 0 - (h / 2))
+                .attr("dy", "1em")
+                .style("text-anchor", "middle")
+                .text("Total Murders");
+
+            //Adds title to graph
+            svg2.append("text")
+                .attr("x", (w / 2))
+                .attr("y", 0 + padding)
+                .attr("dy", "1em")
+                .attr("text-anchor", "middle")
+                .text("Murders per hour");
+
+
+            d3.json("boroughs.geojson", function (json) {
+                //Merge the ag. data and GeoJSON
+                //Loop through once for each ag. data value
+                for (var i = 0; i < stateMurderCounter.length; i++) {
+
+                    //Grab state name
+                    var dataState = stateMurderCounter[i].borough;
+
+                    //Grab data value, and convert from string to float
+                    var dataValue = stateMurderCounter[i].count;
+
+                    //Find the corresponding state inside the GeoJSON
+                    for (var j = 0; j < json.features.length; j++) {
+                        var jsonState = json.features[j].properties.BoroName;
+                        if (dataState === jsonState) {
+                            //Copy the data value into the JSON
+                            json.features[j].properties.value = dataValue;
+
+                        }
+                    }
+
+                }
+
+                //Bind data and create one path per GeoJSON feature
+                svg.selectAll("path")
+                    .data(json.features)
+                    .enter()
+                    .append("path")
+                    .attr("d", path)
+                    .style("fill", function (d) {
+                        //Get data value
+                        var value = d.properties.value;
+                        if (value) {
+                            //If value exists…
+                            return color(value);
+                        } else {
+                            //If value is undefined…
+                            return "#ccc";
+                        }
+                    });
+
+                svg.selectAll("text")
+                    .data(json.features)
+                    .enter()
+                    .append("text")
+                    .attr("x", function (d) {
+                        return path.centroid(d)[0] - 30;
+                    })
+                    .attr("y", function (d) {
+                        return path.centroid(d)[1];
+                    })
+                    .text(function (d) {
+                        return d.properties.BoroName;
+                    })
+                    .attr("class", "boroNames");
+
+                var circle = svg.selectAll("circle")
+                    .data(data)
+                    .enter()
+                    .append("circle")
+                    .attr("class", "unBrushed")
+                    .attr("cx", function (d) {
+                        return projection([d.Longitude, d.Latitude])[0];
+                    })
+                    .attr("cy", function (d) {
+                        return projection([d.Longitude, d.Latitude])[1];
+                    })
+                    .attr("r", 3)
+                    .append("title")
+                    .text(function (d) {
+                        return d.CMPLNT_FR_TM;
+                    });
+
+                function highlightBrushedCircles() {
+
+                    if (d3.event.selection != null) {
+                        circle.attr("class", "un_brushed")
+                            .transition()
+                            //.ease(d3.easeBackIn)
+                            .attr("r", 2);
+
+                        var brush_selection = d3.brushSelection(this);
+
+                        circle.filter(function() {
+                            var cx = d3.select(this).attr("cx");
+                            var cy = d3.select(this).attr("cy");
+                            return checkCircle(brush_selection, cx, cy);
+
+                        }).attr("class", "brushed")
+                            .transition()
+                            .attr("r", 3);
+
+                    }
+                }
+
+                function resetCircles() {
+
+                    // disregard brushes w/o selections
+                    // ref: http://bl.ocks.org/mbostock/6232537
+                    if (!d3.event.selection) return;
+
+                    // programmed clearing of brush after mouse-up
+                    // ref: https://github.com/d3/d3-brush/issues/10
+                    d3.select(this).call(brush.move, null);
+
+                    var d_brushed =  d3.selectAll(".brushed").data();
+
+                    // populate table if one or more elements is brushed
+                    if (d_brushed.length > 0) {
+                        getHours(d_brushed);
+                    } else {
+                        dataset = getHours(data);
+                    }
+
+                }
+
+                var brush = d3.brush()
+                    .on("brush", highlightBrushedCircles)
+                    .on("end", resetCircles);
+
+                svg.append("g").call(brush);
+            });
+        });
+
+        function isBrushed(brush_coords, cx, cy) {
+
+            var x0 = brush_coords[0][0],
+                x1 = brush_coords[1][0],
+                y0 = brush_coords[0][1],
+                y1 = brush_coords[1][1];
+
+            return x0 <= cx && cx <= x1 && y0 <= cy && cy <= y1;
+        }
+
+        function countMurders(data) {
+            var manCounter = 0;
+            var bronxCounter = 0;
+            var brooklynCounter = 0;
+            var queensCounter = 0;
+            var siCounter = 0;
+            for (var i = 0; i < data.length; i++) {
+                switch (data[i].BORO_NM) {
+                    case "MANHATTAN":
+                        manCounter += 1;
+                        break;
+                    case "BRONX":
+                        bronxCounter += 1;
+                        break;
+                    case "BROOKLYN":
+                        brooklynCounter += 1;
+                        break;
+                    case "QUEENS":
+                        queensCounter += 1;
+                        break;
+                    case "STATEN ISLAND":
+                        siCounter += 1;
+                }
+            }
+
+            var result = [
+                {
+                    borough: "Manhattan",
+                    count: manCounter
+                },
+                {
+                    borough: "Bronx",
+                    count: bronxCounter
+                },
+                {
+                    borough: "Brooklyn",
+                    count: brooklynCounter
+                },
+                {
+                    borough: "Queens",
+                    count: queensCounter
+                },
+                {
+                    borough: "Staten Island",
+                    count: siCounter
+                }
+            ];
+
+            return result;
+        }
+
+        /**
+         * Searches through the dataset and finds the hour of the day when the murders occured.
+         * @param data
+         */
+        function getHours(data) {
+            var hours = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+            for (var i = 0; i < data.length; i++) {
+                var str = /:(.+)/.exec(data[i].CMPLNT_FR_TM)[1];
+                hours[parseInt(str)] += 1;
+            }
+
+            return hours;
+        }
+
+    </script>
+</div>
+</body>
+</html>
