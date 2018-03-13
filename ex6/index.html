@@ -54,10 +54,10 @@
         }
         function newBarChart() {
             var brushedSelection = d3.selectAll(".brushed").data()
-            console.log(brushedSelection)
-
             if (brushedSelection.length > 0 ){
+                svg2.remove();
                 barChartData = getHours(brushedSelection);
+                createBarChart();
             }
         }
 
@@ -95,8 +95,8 @@
             if (!d3.event.selection) return;
 
             // Make selection go away
-            d3.select(this).call(brush.move, null);
             newBarChart();
+            d3.select(this).call(brush.move, null);
         }
 
         var brush = d3.brush()
@@ -125,6 +125,7 @@
         //Load in GeoJSON data
         d3.csv("murders.csv", function (data) {
             stateMurderCounter = countMurders(data);
+            console.log(stateMurderCounter)
             dataset = data;
             //Hours per hour
             barChartData = getHours(data);
@@ -239,7 +240,7 @@
         function createBarChart() {
             svg2 = d3.select("#barChart").append("svg").attr("width", w).attr("height", h);
 
-            svg2.selectAll("rects")
+            svg2.selectAll("rect")
                 .data(barChartData)
                 .enter()
                 .append("rect")
@@ -250,6 +251,7 @@
                     return yScale(d);
                 })
                 .attr("height", function (d) {
+                    console.log(d);
                     return yScale(0) - yScale(d);
                 })
                 .attr("width", xScale.bandwidth())
@@ -357,8 +359,9 @@
         function getHours(data) {
             var hours = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
             for (var i = 0; i < data.length; i++) {
-                var str = /:(.+)/.exec(data[i].CMPLNT_FR_TM)[1];
-                hours[parseInt(str)] += 1;
+                //var str = /:(.+)/.exec(data[i].CMPLNT_FR_TM)[0];
+                var hour = parseInt(data[i].CMPLNT_FR_TM.split(":")[0]);
+                hours[hour] += 1;
             }
 
             return hours;
