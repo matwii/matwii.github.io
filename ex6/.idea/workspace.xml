@@ -17,7 +17,7 @@
       <file leaf-file-name="index.html" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1302">
+            <state relative-caret-position="21">
               <caret line="127" column="42" lean-forward="false" selection-start-line="127" selection-start-column="42" selection-end-line="127" selection-end-column="42" />
               <folding />
             </state>
@@ -27,7 +27,7 @@
       <file leaf-file-name="boroughs.geojson" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/boroughs.geojson">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="21">
+            <state relative-caret-position="84">
               <caret line="4" column="7" lean-forward="false" selection-start-line="4" selection-start-column="1" selection-end-line="4" selection-end-column="7" />
               <folding />
             </state>
@@ -47,7 +47,7 @@
       <file leaf-file-name="style.css" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/style.css">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="322">
+            <state relative-caret-position="756">
               <caret line="36" column="4" lean-forward="false" selection-start-line="36" selection-start-column="4" selection-end-line="38" selection-end-column="15" />
               <folding />
             </state>
@@ -136,14 +136,14 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
       <pane id="Scratches" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../Personal Data interaction/final_project" />
     <property name="HbShouldOpenHtmlAsHb" value="" />
   </component>
   <component name="RunDashboard">
@@ -172,12 +172,13 @@
       <option name="presentableId" value="Default" />
       <updated>1520328003592</updated>
       <workItem from="1520328005326" duration="6757000" />
-      <workItem from="1520861390462" duration="34292000" />
+      <workItem from="1520861390462" duration="34891000" />
+      <workItem from="1521031143401" duration="611000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="41049000" />
+    <option name="totallyTimeSpent" value="42259000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-9" y="-9" width="1938" height="1048" extended-state="6" />
@@ -231,6 +232,38 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/murders.csv">
       <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="36" lean-forward="false" selection-start-line="0" selection-start-column="24" selection-end-line="0" selection-end-column="36" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/style.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="756">
+          <caret line="36" column="4" lean-forward="false" selection-start-line="36" selection-start-column="4" selection-end-line="38" selection-end-column="15" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/boroughs.geojson">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="84">
+          <caret line="4" column="7" lean-forward="false" selection-start-line="4" selection-start-column="1" selection-end-line="4" selection-end-column="7" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/murders.csv">
+      <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="42">
           <caret line="2" column="118" lean-forward="true" selection-start-line="2" selection-start-column="118" selection-end-line="2" selection-end-column="118" />
           <folding />
@@ -247,7 +280,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/boroughs.geojson">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="21">
+        <state relative-caret-position="84">
           <caret line="4" column="7" lean-forward="false" selection-start-line="4" selection-start-column="1" selection-end-line="4" selection-end-column="7" />
           <folding />
         </state>
@@ -263,7 +296,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/style.css">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="322">
+        <state relative-caret-position="756">
           <caret line="36" column="4" lean-forward="false" selection-start-line="36" selection-start-column="4" selection-end-line="38" selection-end-column="15" />
           <folding />
         </state>
@@ -271,7 +304,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1302">
+        <state relative-caret-position="21">
           <caret line="127" column="42" lean-forward="false" selection-start-line="127" selection-start-column="42" selection-end-line="127" selection-end-column="42" />
           <folding />
         </state>
