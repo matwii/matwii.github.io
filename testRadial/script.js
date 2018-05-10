@@ -1,13 +1,12 @@
 function renderGraph() {
-  console.log('test');
+  console.log('test2');
+  console.log('This is not working?');
   var width = 960,
     height = 500,
     barHeight = height / 2 - 40;
 
-  var formatNumber = d3.format("s");
-
   var color = d3.scaleQuantize()
-        .range(["rgb(255,165,210)", "rgb(255,135,195)", "rgb(255,105,180)", "rgb(204,84,144)", "rgb(153,63,108)"]);
+        .range(["#84e184", "#5ad75a", "#32cd32", "#28a428", "#1e7b1e"]);
 
   var svg = d3.select('body').append("svg")
     .attr("width", width)
@@ -16,25 +15,35 @@ function renderGraph() {
     .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
     var newData = [2701, 1751, 1076, 770, 830, 1633, 5536, 14802, 18675, 10563, 12109, 12894, 11935, 11766, 15301, 19206, 18755, 15947, 14013, 11341, 8452, 6688, 6162, 5654];
+    var newData2 = [2701, 1751, 1076, 770, 830, 1633, 5536, 14802, 18675, 10563, 12109, 12894, 11935, 11766, 15301, 19206, 18755, 15947, 14013, 11341, 8452, 6688, 6162, 5654];
+    var newArray = [];
+
+    newData.map(function(d, i){
+      newArray.push({
+        name: i,
+        value: d
+      })
+    })
 
   d3.csv("data.csv", function(error, data) {
-    color.domain([d3.min(data.map(function(d){return d.value})), d3.max(data.map(function(d){return d.value}))])
-    console.log('min: ' + d3.min(data.map(function(d){return d.value})), 'max: ' + d3.max(data.map(function(d){return d.value})))
+    console.log(newArray)
+    color.domain([d3.min(newArray.map(function(d){return d.value})), d3.max(newArray.map(function(d){return d.value}))])
+    console.log('min: ' + d3.min(newArray.map(function(d){return d.value})), 'max: ' + d3.max(newArray.map(function(d){return d.value})))
 
-    data.sort(function(a, b) {
-      return b.value - a.value;
-    });
-
-    var extent = d3.extent(data, function(d) {
+    var extent = d3.extent(newArray, function(d) {
       return d.value;
     });
+
+    console.log('extent: ' + extent);
+
     var barScale = d3.scaleLinear()
       .domain(extent)
       .range([0, barHeight]);
 
-    var keys = data.map(function(d, i) {
+    var keys = newArray.map(function(d, i) {
       return d.name;
     });
+    console.log('keys: ' + keys);
     var numBars = keys.length;
 
     var x = d3.scaleLinear()
@@ -43,7 +52,6 @@ function renderGraph() {
 
     var xAxis = d3.axisBottom(x)
       .ticks(3)
-      .tickFormat(formatNumber);
 
     var circles = svg.selectAll("circle")
       .data(x.ticks(3))
@@ -66,7 +74,7 @@ function renderGraph() {
       .innerRadius(0);
 
     var segments = svg.selectAll("path")
-      .data(data)
+      .data(newArray)
       .enter().append("path")
       .each(function(d) {
         d.outerRadius = 0;
@@ -133,7 +141,7 @@ function renderGraph() {
         return i * 100 / numBars + 50 / numBars + '%';
       })
       .text(function(d) {
-        return d.toUpperCase();
+        return d;
       });
   });
 }
