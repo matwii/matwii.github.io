@@ -8,7 +8,9 @@ function renderGraph() {
 
   var formatNumber = d3.format("s");
 
-  var color = ["pink", "#009688"]
+  var color = d3.scaleOrdinal(d3.schemeCategory10)
+      .range(["#009688", "pink"]);
+
 
   var svg = d3.select('body').append("svg")
     .attr("width", width)
@@ -171,13 +173,16 @@ function renderGraph() {
       return i * 100 / numBarsStates + 50 / numBarsStates + '%';
     })
     .text(function(d) {
-      return d;
+      if (d < 10){
+        return "0"+ d + ":00";
+      }
+      return d + ":00";
     });
 
     // legend
  var legend = svg.selectAll(".legend")
      .data(ageNames.slice().reverse())
-   .enter().append("g")
+     .enter().append("g")
      .attr("class", "legend")
      .attr("transform", function(d, i) { return "translate("+ -width/2 + "," + (-(height/2 - 20) + (i * 20)) + ")"; });
 
@@ -185,7 +190,12 @@ function renderGraph() {
        .attr("x", width - 33)
        .attr("width", 18)
        .attr("height", 18)
-       .style("fill", color);
+       .style("fill", "#009688");
+       legend.append("rect")
+             .attr("x", width - 33)
+             .attr("width", 18)
+             .attr("height", 18)
+             .style("fill", color);
 
  legend.append("text")
        .attr("x", width - 39)
